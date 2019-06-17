@@ -1,16 +1,16 @@
-import React, { Component, Dispatch } from 'react';
+import React, { Component} from 'react';
 import { MouseEvent } from 'react'; 
 import imageApi from './../logic/image/image-api';
 
 type Props = {}
 
-type State = { value:string, imgs: {}}
+type State = { value:string, imgstotal: []}
 class Home extends Component<Props,State>{
 
     constructor(props: Props){
         super(props);
             this.state = {
-               imgs: '',
+               imgstotal: [],
                value:''
             
             
@@ -24,7 +24,8 @@ class Home extends Component<Props,State>{
         onSubmit = (event:MouseEvent<HTMLButtonElement>)=> {
            event.preventDefault();
            imageApi.fetchImages()
-            .then((imgs) )
+           .then(imgstotal => {console.log(imgstotal)})
+           .catch(error => console.log("error",error) );
             
         }
 
