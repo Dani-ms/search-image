@@ -1,57 +1,62 @@
-import React, { Component} from 'react';
-import { MouseEvent } from 'react'; 
-import imageApi from './../logic/image/image-api';
+import React, { Component } from "react";
+import { MouseEvent } from "react";
+import imageApi, { Image } from "./../logic/image/image-api";
+import Button from "@material-ui/core/Button";
 
-type Props = {}
+type Props = {};
 
-type State = { value:string, imgstotal: []}
-class Home extends Component<Props,State>{
+type State = {
+  searchInput: string;
+  imgs?: Image[];
+};
 
-    constructor(props: Props){
-        super(props);
-            this.state = {
-               imgstotal: [],
-               value:''
-            
-            
-        };
-    }
+class Home extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      imgs: undefined,
+      searchInput: ""
+    };
+  }
 
-    
-        onChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-            this.setState({value: event.currentTarget.value});
-        }
-        onSubmit = (event:MouseEvent<HTMLButtonElement>)=> {
-           event.preventDefault();
-           imageApi.fetchImages()
-           .then(imgstotal => {console.log(imgstotal)})
-           .catch(error => console.log("error",error) );
-            
-        }
+  onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ searchInput: event.currentTarget.value });
+  };
 
-        
+  onSubmit = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    imageApi
+      .fetchImages(this.state.searchInput)
+      //.then(data => this.setState({imgstotal: data.imgstotal}))
+      .then(res => {
+        this.setState({ imgs: res });
+      })
+      .catch(error => console.log("error", error));
+  };
 
+  render() {
+    return (
+      <div className="home">
+        <h1>Search for image</h1>
+        <input type="search" value={this.state.searchInput} onChange={this.onChange}/>
+        <Button onClick={this.onSubmit} value="submit"  color="secondary" variant="contained" >
+          Search
+        </Button>
 
-
-    render(){
-
-        return(
-            <div className="home">
-            <h1>Search for image</h1>
-                <input type="search" value={this.state.value} onChange={this.onChange}></input>
-                <button onClick={this.onSubmit} value="submit">Search</button>
-            <div className="listimage">
+        <div className="listimage">
+          {this.state.imgs ? (
             <ul>
-                <li></li>
+              {this.state.imgs.map((img, i) => (
+                <li key={i}>
+                  <img src={img.urls.small} alt={img.description} />;
+                </li>
+              ))}
             </ul>
-            </div>
-            
-            </div>
-    
-        );
-    }
-       
+          ) : null}
+        </div>
+      </div>
+    );
+  }
 }
- 
 
-export default Home
+export default Home;
