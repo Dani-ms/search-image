@@ -10,7 +10,7 @@ export type Image = {
 }
 const imageApi =  {
     fetchImages(search:string) : Promise<Image[]> {
-        return fetch(`https://api.unsplash.com/photos/search?page=2&client_id=${ACCESS_KEY}&query=${search}`)
+        return fetch(`https://api.unsplash.com/photos/search?page=5&client_id=${ACCESS_KEY}&query=${search}`)
         .then(res => res.json())
     }
 }
